@@ -58,3 +58,6 @@ status Display(hash_t hast_table[]);
 
 /*To save the database created into a file*/
 status save(hash_t hast_table[]);
+
+/*To search in the database*/
+status search(hash_t hast_table[]);

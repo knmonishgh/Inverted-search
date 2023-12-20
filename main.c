@@ -73,6 +73,21 @@ int main(int argc, char **argv)
                     printf("\033[0m");
                 }
                 break;
+            case 5:
+                printf("\n");
+                if(search(hash_table)==success)
+                {
+                    printf("\033[0;32m");
+                    printf("\n\tSearch successfull!!\n");
+                    printf("\033[0m");
+                }
+                else
+                {
+                    printf("\033[0;31m");
+                    printf("\n\tData not Found  \n");
+                    printf("\033[0m");
+                }
+                break;
             case 6:
                 printf("\n\033[33;45m                                                                         \033[0m\n\n");
                 exit(0);

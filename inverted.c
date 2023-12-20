@@ -235,3 +235,34 @@ status save(hash_t hast_table[])
     }
     return success;
 }
+
+status search(hash_t hast_table[])
+{
+    char key[wordsize];
+    printf("Enter the key: \n");
+    scanf("%s",key);
+    int se_index = key[0] % 65;
+    if(se_index >=25)
+    {
+        se_index = se_index - 32;
+    }
+    printf("%d",se_index);
+    word_node *se_temp = hast_table[se_index].hlink;
+    while(se_temp!=NULL)
+    {
+        if(strcmp(key,se_temp->word)==0)
+        {
+            file_node *fp_temp = se_temp->Flink;
+            printf("%s:",se_temp->word);
+            while(fp_temp!=NULL)
+            {
+                printf("%s:%d",fp_temp->file_name,fp_temp->word_count);
+                fp_temp = fp_temp->link;
+            }
+            return success;
+        }
+        se_temp=se_temp->Wnode;
+    }
+    printf("\n");
+    return failure;
+}
