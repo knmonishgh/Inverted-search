@@ -6,6 +6,7 @@
 
 FILE *fptr;
 FILE *save_fptr;
+FILE *fetch_fptr;
 
 status insert_last(char *data, files **file)
 {
@@ -36,10 +37,7 @@ status insert_last(char *data, files **file)
             if (strcmp(cur->file_name, data) == 0)
             {
                 flag = 1;
-                printf("\033[0;31m");
-                printf("\t X Duplicate found\t: %s\n\n", cur->file_name);
-                printf("\033[0m");
-                break;
+                return failure;
             }
             prev = cur;
             cur = cur->flink;
@@ -84,7 +82,12 @@ status readandvalidate(int argc, char **argv, files **file)
                     printf("\033[0m");
                     continue;
                 }
-                insert_last(argv[i], &*file);
+                if (insert_last(argv[i], &*file) == failure)
+                {
+                    printf("\033[0;31m");
+                    printf("\t X Duplicate found\t: %s\n\n", argv[i]);
+                    printf("\033[0m");
+                }
             }
             else
             {
@@ -179,6 +182,9 @@ status create_database(files *file, hash_t hast_table[])
             }
         }
         fclose(fptr);
+        printf("\033[0;32m");
+        printf("\tDatabase created\t: %s\n", each_file->file_name);
+        printf("\033[0m");
         each_file = each_file->flink;
     }
     return success;
@@ -222,14 +228,14 @@ status save(hash_t hast_table[])
         word_node *distemp = hast_table[i].hlink;
         while (distemp != NULL)
         {
-            fprintf(save_fptr, "\t%d:%s:", distemp->file_count, distemp->word);
+            fprintf(save_fptr, "#%d;%s;%d;", i, distemp->word, distemp->file_count);
             file_node *disfile = distemp->Flink;
             for (int j = 0; j < distemp->file_count; j++)
             {
-                fprintf(save_fptr, "%d:%s:", disfile->word_count, disfile->file_name);
+                fprintf(save_fptr, "%s;%d;", disfile->file_name, disfile->word_count);
                 disfile = disfile->link;
             }
-            fprintf(save_fptr, "\n\n");
+            fprintf(save_fptr, "#\n");
             distemp = distemp->Wnode;
         }
     }
@@ -239,30 +245,106 @@ status save(hash_t hast_table[])
 status search(hash_t hast_table[])
 {
     char key[wordsize];
-    printf("Enter the key: \n");
-    scanf("%s",key);
+    printf("\033[33;45m");
+    printf("\tEnter your Key : ");
+    printf("\033[0m");
+    scanf("%s", key);
+    key[0] = toupper(key[0]);
     int se_index = key[0] % 65;
-    if(se_index >=25)
-    {
-        se_index = se_index - 32;
-    }
-    printf("%d",se_index);
     word_node *se_temp = hast_table[se_index].hlink;
-    while(se_temp!=NULL)
+    while (se_temp != NULL)
     {
-        if(strcmp(key,se_temp->word)==0)
+        printf("\033[0;36m");
+        if (strcmp(key, se_temp->word) == 0)
         {
             file_node *fp_temp = se_temp->Flink;
-            printf("%s:",se_temp->word);
-            while(fp_temp!=NULL)
+            printf("\n\t%s : ", se_temp->word);
+            while (fp_temp != NULL)
             {
-                printf("%s:%d",fp_temp->file_name,fp_temp->word_count);
+                printf(" %s : %d |", fp_temp->file_name, fp_temp->word_count);
                 fp_temp = fp_temp->link;
             }
+            printf("\n\n");
             return success;
         }
-        se_temp=se_temp->Wnode;
+        printf("\033[0m");
+        se_temp = se_temp->Wnode;
     }
-    printf("\n");
     return failure;
+}
+
+status update(hash_t hast_table[])
+{
+    char buff[100];
+    fetch_fptr = fopen("Output.txt", "r");
+    if (!fetch_fptr)
+    {
+        perror("fopen");
+        fprintf(stderr, "ERROR: Unable to open file %s\n", "Output.txt");
+        return failure;
+    }
+    while (fscanf(fetch_fptr, "%s", buff) != EOF)
+    {
+        if (buff[0] == '#')
+        {
+            printf("%s\n", buff);
+            int index = atoi(strtok(&buff[1], ";"));
+            word_node *new = malloc(sizeof(word_node));
+            strcpy(new->word, strtok(NULL, ";"));
+            new->Flink = NULL;
+            new->Wnode = NULL;
+            new->file_count = atoi(strtok(NULL, ";"));
+
+            if (hast_table[index].hlink == NULL)
+            {
+                for (int g = 0; g < new->file_count; g++)
+                {
+                    file_node *subnew = malloc(sizeof(file_node));
+                    strcpy(subnew->file_name, strtok(NULL, ";"));
+                    subnew->word_count = atoi(strtok(NULL, ";"));
+                    subnew->link = NULL;
+                    if (new->Flink == NULL)
+                    {
+                        new->Flink = subnew;
+                        continue;
+                    }
+                    file_node *subtemp = new->Flink;
+                    while (subtemp->link != NULL)
+                    {
+                        subtemp = subtemp->link;
+                    }
+                    subtemp->link = subnew;
+                }
+                hast_table[index].hlink = new;
+            }
+            else
+            {
+                word_node *temp = hast_table[index].hlink;
+                while (temp->Wnode != NULL)
+                {
+                    temp = temp->Wnode;
+                }
+                for (int g = 0; g < new->file_count; g++)
+                {
+                    file_node *subnew = malloc(sizeof(file_node));
+                    strcpy(subnew->file_name, strtok(NULL, ";"));
+                    subnew->word_count = atoi(strtok(NULL, ";"));
+                    subnew->link = NULL;
+                    if (new->Flink == NULL)
+                    {
+                        new->Flink = subnew;
+                        continue;
+                    }
+                    file_node *subtemp = new->Flink;
+                    while (subtemp->link != NULL)
+                    {
+                        subtemp = subtemp->link;
+                    }
+                    subtemp->link = subnew;
+                }
+                temp->Wnode = new;
+            }
+        }
+    }
+    return success;
 }

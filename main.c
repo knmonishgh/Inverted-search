@@ -19,6 +19,7 @@ int main(int argc, char **argv)
         printf("\033[0;32m");
         printf("\tValidated files successfully!! \n");
         printf("\033[0m");
+        int flag = 0;
         while (1)
         {
             int choice;
@@ -30,22 +31,32 @@ int main(int argc, char **argv)
             switch (choice)
             {
             case 1:
-                if (create_database(file, hash_table) == success)
+                if (flag == 0)
                 {
-                    printf("\033[0;32m");
-                    printf("\n\tDatabase successfully created!!\n");
-                    printf("\033[0m");
+                    if (create_database(file, hash_table) == success)
+                    {
+                        printf("\033[0;32m");
+                        printf("\n\tDatabase successfully created!!\n");
+                        printf("\033[0m");
+                    }
+                    else
+                    {
+                        printf("\033[0;31m");
+                        printf("\n\tDatabase creation Failed\n");
+                        printf("\033[0m");
+                    }
                 }
                 else
                 {
                     printf("\033[0;31m");
-                    printf("\n\tDatabase creation Failed\n");
+                    printf("\n\t X Database already created\n");
                     printf("\033[0m");
                 }
+                flag = 1;
                 break;
             case 2:
                 printf("\n");
-                if(Display(hash_table)==success)
+                if (Display(hash_table) == success)
                 {
                     printf("\033[0;32m");
                     printf("\n\tDatabase Displayed successfully!!\n");
@@ -58,9 +69,27 @@ int main(int argc, char **argv)
                     printf("\033[0m");
                 }
                 break;
+            case 3:
+                printf("\n");
+                if (flag == 0)
+                {
+                    if (update(hash_table) == success)
+                    {
+                        printf("\033[0;32m");
+                        printf("\n\tDatabase Updated successfully!!\n");
+                        printf("\033[0m");
+                    }
+                    else
+                    {
+                        printf("\033[0;31m");
+                        printf("\n\tDatabase could'nt be Updated\n");
+                        printf("\033[0m");
+                    }
+                }
+                break;
             case 4:
                 printf("\n");
-                if(save(hash_table)==success)
+                if (save(hash_table) == success)
                 {
                     printf("\033[0;32m");
                     printf("\n\tDatabase saved successfully!!\n");
@@ -75,7 +104,7 @@ int main(int argc, char **argv)
                 break;
             case 5:
                 printf("\n");
-                if(search(hash_table)==success)
+                if (search(hash_table) == success)
                 {
                     printf("\033[0;32m");
                     printf("\n\tSearch successfull!!\n");

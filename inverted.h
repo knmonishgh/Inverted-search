@@ -61,3 +61,6 @@ status save(hash_t hast_table[]);
 
 /*To search in the database*/
 status search(hash_t hast_table[]);
+
+/*Update the database*/
+status update(hash_t hast_table[]);

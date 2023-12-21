@@ -1,16 +1,8 @@
-	2:Am:1:file1.txt:1:file2.txt:
-
-	1:Akash:1:file2.txt:
-
-	1:Abhishek:1:file2.txt:
-
-	2:Ball:1:file1.txt:1:file2.txt:
-
-	1:Bally:1:file1.txt:
-
-	2:Hi:1:file1.txt:2:file2.txt:
-
-	2:I:1:file1.txt:1:file2.txt:
-
-	1:Monish:1:file2.txt:
-
+#0;Am;2;file1.txt;1;file2.txt;1;#
+#0;Akash;1;file2.txt;1;#
+#0;Abhishek;1;file2.txt;1;#
+#1;Ball;2;file1.txt;1;file2.txt;1;#
+#1;Boy;1;file1.txt;1;#
+#7;Hi;2;file1.txt;1;file2.txt;2;#
+#8;I;2;file1.txt;1;file2.txt;1;#
+#12;Monish;1;file2.txt;1;#
