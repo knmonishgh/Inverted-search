@@ -5,6 +5,7 @@ int main(int argc, char **argv)
 {
     system("cls");
     files *file = NULL;
+    files *update_file = NULL;
     hash_t hash_table[25];
     for (int i = 0; i < 25; i++)
     {
@@ -73,8 +74,44 @@ int main(int argc, char **argv)
                 printf("\n");
                 if (flag == 0)
                 {
-                    if (update(hash_table) == success)
+                    if (update(hash_table, &update_file) == success)
                     {
+                        files *up_temp = update_file;
+
+                        while (up_temp != NULL)
+                        {
+                            files *file_temp = file;
+                            files *file_prev = NULL;
+
+                            while (file_temp != NULL)
+                            {
+                                if (strcmp(file_temp->file_name, up_temp->file_name) == 0)
+                                {
+                                    if (file_prev == NULL)
+                                    {
+                                        files *free_temp = file_temp;
+                                        file = file_temp->flink;
+                                        file_temp = file_temp->flink;
+                                        free(free_temp);
+                                    }
+                                    else
+                                    {
+                                        file_prev->flink = file_temp->flink;
+                                        files *free_temp = file_temp;
+                                        file_temp = file_temp->flink;
+                                        free(free_temp);
+                                    }
+                                }
+                                else
+                                {
+                                    file_prev = file_temp;
+                                    file_temp = file_temp->flink;
+                                }
+                            }
+
+                            up_temp = up_temp->flink;
+                        }
+
                         printf("\033[0;32m");
                         printf("\n\tDatabase Updated successfully!!\n");
                         printf("\033[0m");

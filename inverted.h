@@ -1,5 +1,5 @@
 #include<stdio.h>
-
+#include<string.h>
 
 
 #define namesize 10
@@ -63,4 +63,4 @@ status save(hash_t hast_table[]);
 status search(hash_t hast_table[]);
 
 /*Update the database*/
-status update(hash_t hast_table[]);
+status update(hash_t hast_table[],files **update_file);

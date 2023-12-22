@@ -1,6 +1,5 @@
 #include "inverted.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -273,7 +272,7 @@ status search(hash_t hast_table[])
     return failure;
 }
 
-status update(hash_t hast_table[])
+status update(hash_t hast_table[],files **update_file)
 {
     char buff[100];
     fetch_fptr = fopen("Output.txt", "r");
@@ -301,6 +300,7 @@ status update(hash_t hast_table[])
                 {
                     file_node *subnew = malloc(sizeof(file_node));
                     strcpy(subnew->file_name, strtok(NULL, ";"));
+                    insert_last(subnew->file_name,&*update_file);
                     subnew->word_count = atoi(strtok(NULL, ";"));
                     subnew->link = NULL;
                     if (new->Flink == NULL)
@@ -328,6 +328,7 @@ status update(hash_t hast_table[])
                 {
                     file_node *subnew = malloc(sizeof(file_node));
                     strcpy(subnew->file_name, strtok(NULL, ";"));
+                    insert_last(subnew->file_name,&*update_file);
                     subnew->word_count = atoi(strtok(NULL, ";"));
                     subnew->link = NULL;
                     if (new->Flink == NULL)
